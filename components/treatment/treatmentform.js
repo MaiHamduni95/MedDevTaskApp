@@ -1,7 +1,7 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
-import { Alert, Button, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Button, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 
 const TreatmentForm = ({ onSubmit }) => {
   const [patientName, setPatientName] = useState('');
@@ -65,61 +65,81 @@ const TreatmentForm = ({ onSubmit }) => {
   };
 
   return (
-    <View style={styles.form}>
-      <Text>Patient Name</Text>
-      <TextInput
-        value={patientName}
-        onChangeText={setPatientName}
-        style={styles.input}
-        placeholder="Enter name"
-      />
+    <View style={styles.outerContainer}>
+      <View style={styles.form}>
+        <Text>Patient Name</Text>
+        <TextInput
+          value={patientName}
+          onChangeText={setPatientName}
+          style={styles.input}
+          placeholder="Enter name"
+        />
 
-      <Text>Treatment Type</Text>
-      <Picker
-        selectedValue={treatmentType}
-        onValueChange={setTreatmentType}
-        style={styles.input}
-      >
-        <Picker.Item label="Physiotherapy" value="Physiotherapy" />
-        <Picker.Item label="Ultrasound" value="Ultrasound" />
-        <Picker.Item label="Stimulation" value="Stimulation" />
-      </Picker>
+        <Text>Treatment Type</Text>
+        <Picker
+          selectedValue={treatmentType}
+          onValueChange={setTreatmentType}
+          style={styles.input}
+        >
+          <Picker.Item label="Physiotherapy" value="Physiotherapy" />
+          <Picker.Item label="Ultrasound" value="Ultrasound" />
+          <Picker.Item label="Stimulation" value="Stimulation" />
+        </Picker>
 
-      <Text>Treatment Date & Time</Text>
-      <Pressable onPress={openDateTimePicker}>
+        <Text>Treatment Date & Time</Text>
         <TextInput
           value={treatmentDate.toLocaleString()}
           style={styles.input}
-           editable={false}
+          editable={false}
           onFocus={openDateTimePicker}
         />
-      </Pressable>
 
-      {showDatePicker && (
-        <DateTimePicker
-          value={treatmentDate}
-          mode={mode}
-          display={Platform.OS === 'ios' ? 'inline' : 'default'}
-          onChange={onChange}
+        {showDatePicker && (
+          <DateTimePicker
+            value={treatmentDate}
+            mode={mode}
+            display={Platform.OS === 'ios' ? 'inline' : 'default'}
+            onChange={onChange}
+          />
+        )}
+
+        <Text>Notes</Text>
+        <TextInput
+          value={notes}
+          onChangeText={setNotes}
+          style={[styles.input, { height: 80 }]}
+          multiline
+          placeholder="Optional notes"
         />
-      )}
 
-      <Text>Notes</Text>
-      <TextInput
-        value={notes}
-        onChangeText={setNotes}
-        style={[styles.input, { height: 80 }]}
-        multiline
-        placeholder="Optional notes"
-      />
-
-      <Button title="Add Treatment" onPress={handleSubmit} />
+        <Button title="Add Treatment" onPress={handleSubmit} />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  form: { padding: 16 },
+  outerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100%',
+    backgroundColor: '#f9f9f9',
+    paddingVertical: 32,
+  },
+  form: {
+    width: '100%',
+    maxWidth: 500,
+    backgroundColor: '#fff',
+    padding: 24,
+    borderRadius: 12,
+    ...Platform.select({
+      web: {
+        boxShadow: '0 2px 16px rgba(0,0,0,0.08)',
+      },
+      default: {},
+    }),
+  },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',

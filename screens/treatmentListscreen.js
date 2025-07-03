@@ -4,6 +4,7 @@ import {
     Alert,
     Button,
     FlatList,
+    Platform,
     StyleSheet,
     Text,
     View,
@@ -17,8 +18,8 @@ const TreatmentListScreen = () => {
   const loadTreatments = async () => {
     try {
       const res = await getTreatments();
-         const ids = res.data.map(t => t.id);
-         console.log('Treatment IDs:', ids);
+      const ids = res.data.map(t => t.id);
+      console.log('Treatment IDs:', ids);
 
       setTreatments(res.data);
     } catch (error) {
@@ -60,25 +61,58 @@ const TreatmentListScreen = () => {
   }
 
   return (
-    <FlatList
-      data={treatments}
-     keyExtractor={(item, index) => item.id || index.toString()}
-      renderItem={renderItem}
-      contentContainerStyle={styles.container}
-      ListEmptyComponent={<Text>No treatments found.</Text>}
-    />
+    <View style={styles.outerContainer}>
+      <View style={styles.innerContainer}>
+        <FlatList
+          data={treatments}
+          keyExtractor={(item, index) => item.id || index.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={styles.container}
+          ListEmptyComponent={<Text>No treatments found.</Text>}
+        />
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100%',
+    backgroundColor: '#fff',
+    paddingVertical: 32,
+  },
+  innerContainer: {
+    width: '100%',
+    maxWidth: 600, // Responsive max width for desktop/web
+    alignSelf: 'center',
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    ...Platform.select({
+      web: {
+        boxShadow: '0 2px 16px rgba(0,0,0,0.08)',
+      },
+      default: {},
+    }),
+  },
   container: {
-    padding: 16,
+    padding: 24,
+    flexGrow: 1,
   },
   card: {
     backgroundColor: '#f2f2f2',
     padding: 16,
     marginBottom: 12,
     borderRadius: 8,
+    ...Platform.select({
+      web: {
+        boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+      },
+      default: {},
+    }),
   },
   title: {
     fontWeight: 'bold',
